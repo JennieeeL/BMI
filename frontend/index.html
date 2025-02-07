@@ -1,0 +1,91 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>BMI Calculator</title>  
+    <style>  
+        body {  
+            font-family: Arial, sans-serif;  
+            display: flex;  
+            justify-content: center;  
+            align-items: center;  
+            height: 120vh;  
+            background-color: #f4f4f9;  
+        }  
+        .container {  
+            background-color: #fff;  
+            padding: 30px;  
+            border-radius: 1px;  
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  
+        }  
+        input {  
+            margin: 10px 0;  
+            padding: 8px;  
+            width: 100%;  
+            box-sizing: border-box;  
+        }  
+        button {  
+            padding: 10px;  
+            width: 100%;  
+            background-color: #ffae00;  
+            color: #fff;  
+            border: none;  
+            border-radius: 4px;  
+            cursor: pointer;  
+        }  
+        button:hover {  
+            background-color: #b39200;  
+        }  
+        .result {  
+            margin-top: 20px;  
+            font-size: 1.2em;  
+        }  
+    </style>  
+</head>  
+<body>  
+    <div class="container">  
+        <h2>BMI Calculator</h2>  
+        <input type="number" id="weight" placeholder="Enter weight in kg" required>  
+        <input type="number" id="height" placeholder="Enter height in meters" required>  
+        <button onclick="calculateBMI()">Calculate BMI</button>  
+        <div class="result" id="result"></div>  
+    </div>  
+  
+    <script>  
+        async function calculateBMI() {  
+            const weight = parseFloat(document.getElementById('weight').value);  
+            const height = parseFloat(document.getElementById('height').value);  
+            const resultElement = document.getElementById('result');  
+  
+            if (isNaN(weight) || isNaN(height) || height <= 0) {  
+                resultElement.textContent = 'Please enter valid weight and height.';  
+                return;  
+            }  
+  
+            try {  
+                const response = await fetch('http://127.0.0.1:8080/get_bmi', {  
+                    method: 'POST',  
+                    headers: {  
+                        'Content-Type': 'application/json'  
+                    },  
+                    body: JSON.stringify({ weight, height })  
+                });  
+  
+                if (!response.ok) {  
+                    throw new Error('Network response was not ok');  
+                }  
+  
+                const data = await response.json();  
+                resultElement.textContent = `Your BMI is ${data.bmi.toFixed(2)}`;  
+            } catch (error) {  
+                resultElement.textContent = 'Error calculating BMI: ' + error.message;  
+            }  
+        }  
+    </script>  
+</body>  
+</html>  
+
+
+
+
